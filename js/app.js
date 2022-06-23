@@ -4,12 +4,16 @@ const $entradaTarea = document.querySelector('#entrada-agregar');
 const $temporizador = document.querySelector('#temporizador');
 const $tiempo = document.querySelector('#tiempo');
 
+let tareas = [];
+let minutos = 0,
+  segundos = 0;
+
 document.addEventListener('DOMContentLoaded', iniciarApp());
 
-let tareas = [];
 
 function iniciarApp(){
   agregarTarea();
+  mostrarTiempo();
 }
 
 
@@ -51,14 +55,76 @@ function agregarTarea() {
   
 }
 
-function iniciarTemporizador() {
-  const minIniciales = 25;
-  const segIniciales = 0;
+function mostrarTiempo() {
+  minutos = minutos < 10 ? `0${minutos}` : minutos;
+  segundos = segundos < 10 ? `0${segundos}` : segundos;
+  // console.log(minutos,segundos);
+
+
+  $tiempo.innerHTML = `${minutos}:${segundos}`;
+}
+
+function iniciarDescanso() {
+  const $tituloTarea = document.querySelector('#titulo-tarea > p');
+  $tituloTarea.textContent = 'Descanso';
+
+  let minDescanso = 3,
+    segDescanso = 5;
+  
+  const temporizadorDescanso = setInterval(() => {
+    segDescanso--;
+
+    minDescanso = minDescanso < 10 ? `0${minDescanso}` : minDescanso;
+    segDescanso = segDescanso < 10 ? `0${segDescanso}` : segDescanso;
+
+    $tiempo.innerHTML = `${minDescanso}:${segDescanso}`;
+
+    minDescanso = parseInt(minDescanso);
+    segDescanso = parseInt(segDescanso);
+
+    console.log(minDescanso, segDescanso);
+
+    if (segDescanso === 0 && minDescanso === 0) {
+      clearInterval(temporizadorDescanso);
+    }
+
+    if (segDescanso === 0) {
+      segDescanso = 5;
+      minDescanso--;
+    }
+  },1000);
+
+
+  
+
+}
+
+function iniciarTemporizador(e) {
+  minutos = 1;
+  segundos = 5;
+
   
   const temporizador = setInterval(() => {
+    segundos--;
+
+    mostrarTiempo();
+    minutos = parseInt(minutos);
+    segundos = parseInt(segundos);
+    // console.log(minutos,segundos);
     
+    if (segundos === 0 && minutos === 0) {
+      tareaModoTerminada(e);
+      clearInterval(temporizador);
+      iniciarDescanso();
+
+    }
+
+    if (segundos === 0) {
+      segundos = 5;
+      minutos--;
+    }
+
     
-    console.log(`${minutos}:${segundos}`);
       
   }, 1000);
 }
@@ -68,11 +134,16 @@ function añadirNombreTarea(e) {
   // console.log(nombreTarea);
 
   const $tituloTarea = document.querySelector('#titulo-tarea');
-  $tituloTarea.innerHTML = /*html*/`<p class="titulo-tarea">${nombreTarea}</p>`;
+  $tituloTarea.innerHTML = /*html*/`<p>${nombreTarea}</p>`;
 
 }
 
-function botonModoProgreso(e){
+function tareaModoTerminada(e){
+  e.target.textContent = 'Tarea Terminada';
+  e.target.classList.add('btn-terminado');
+}
+
+function tareaModoProgreso(e){
   e.target.textContent = 'En Progreso...';
   e.target.classList.add('btn-progreso');
 }
@@ -85,8 +156,8 @@ function iniciarTarea() {
   $botonesIniciar.forEach($btnIniciar => {
     $btnIniciar.addEventListener('click', e => {
       añadirNombreTarea(e);
-      botonModoProgreso(e);
-      // iniciarTemporizador();
+      tareaModoProgreso(e);
+      iniciarTemporizador(e);
     });
   });
   

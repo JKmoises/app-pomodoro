@@ -44,6 +44,7 @@ button {
   color: var(--link-color);
   text-decoration: none;
   transition: all 0.5s ease-out;
+  outline: none;
 }
 
 a:hover,
@@ -242,6 +243,10 @@ p {
   pointer-events: none;
 }
 
+.btn-terminado{
+  background-color: var(--link-color);
+}
+
 .nombre-tarea{
   flex: 2;
   text-transform: capitalize;
@@ -249,7 +254,7 @@ p {
   font-weight: 300;
 }
 
-@media screen and (min-width: 1024px) {
+@media screen and (min-width: 768px) {
   .btn-agregar-tarea {
     align-self: flex-end;
   }
