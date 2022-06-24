@@ -166,6 +166,11 @@ p {
   min-height: 80vh;
 }
 
+.card-container h1{
+  color: var(--white-color);
+  text-transform: uppercase;
+}
+
 .card{
   background-color: var(--white-color);
   width: 50%;
@@ -252,6 +257,16 @@ p {
   text-transform: capitalize;
   font-size: 1.2rem;
   font-weight: 300;
+}
+
+.desactivado:disabled{
+  background-color: var(--first-alpha-color);
+  pointer-events: none;
+}
+
+.activado:disabled{
+  background-color: var(--first-color);
+  pointer-events: auto;
 }
 
 @media screen and (min-width: 768px) {

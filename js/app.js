@@ -6,7 +6,9 @@ const $tiempo = document.querySelector('#tiempo');
 
 let tareas = [];
 let minutos = 0,
-  segundos = 0;
+  segundos = 0,
+  minDescanso = 0,
+  segDescanso = 0;
 
 document.addEventListener('DOMContentLoaded', iniciarApp());
 
@@ -18,6 +20,8 @@ function iniciarApp(){
 
 
 function mostrarTarea(e) {
+  tareas = [];
+  desactivarBoton($btnAgregar,'desactivado');
   
   if ($entradaTarea.value !== '') {
     limpiarHTML($tareas);
@@ -42,6 +46,12 @@ function mostrarTarea(e) {
   }
 }
 
+function desactivarBoton($elemento = null,clase,modo = true){
+  $elemento.disabled = modo;
+
+  $elemento.classList.add(clase);
+}
+
 function agregarTarea() {
 
   $btnAgregar.addEventListener('click', mostrarTarea);
@@ -55,36 +65,33 @@ function agregarTarea() {
   
 }
 
-function mostrarTiempo() {
-  minutos = minutos < 10 ? `0${minutos}` : minutos;
-  segundos = segundos < 10 ? `0${segundos}` : segundos;
-  // console.log(minutos,segundos);
+function mostrarTiempoDescanso(){
+  minDescanso = minDescanso < 10 ? `0${minDescanso}` : minDescanso;
+  segDescanso = segDescanso < 10 ? `0${segDescanso}` : segDescanso;
 
+  $tiempo.innerHTML = `${minDescanso}:${segDescanso}`;
 
-  $tiempo.innerHTML = `${minutos}:${segundos}`;
+  minDescanso = parseInt(minDescanso);
+  segDescanso = parseInt(segDescanso);
+  console.log(minDescanso, segDescanso);
 }
+
 
 function iniciarDescanso() {
   const $tituloTarea = document.querySelector('#titulo-tarea > p');
   $tituloTarea.textContent = 'Descanso';
 
-  let minDescanso = 3,
-    segDescanso = 5;
+  minDescanso = 5;
+  segDescanso = 60;
   
   const temporizadorDescanso = setInterval(() => {
     segDescanso--;
 
-    minDescanso = minDescanso < 10 ? `0${minDescanso}` : minDescanso;
-    segDescanso = segDescanso < 10 ? `0${segDescanso}` : segDescanso;
-
-    $tiempo.innerHTML = `${minDescanso}:${segDescanso}`;
-
-    minDescanso = parseInt(minDescanso);
-    segDescanso = parseInt(segDescanso);
-
-    console.log(minDescanso, segDescanso);
+    mostrarTiempoDescanso();
 
     if (segDescanso === 0 && minDescanso === 0) {
+      $tituloTarea.textContent = null;
+      desactivarBoton($btnAgregar,'activado',false);
       clearInterval(temporizadorDescanso);
     }
 
@@ -99,18 +106,28 @@ function iniciarDescanso() {
 
 }
 
+function mostrarTiempo() {
+  minutos = minutos < 10 ? `0${minutos}` : minutos;
+  segundos = segundos < 10 ? `0${segundos}` : segundos;
+
+
+  $tiempo.innerHTML = `${minutos}:${segundos}`;
+
+  minutos = parseInt(minutos);
+  segundos = parseInt(segundos);
+  console.log(minutos,segundos);
+}
+
 function iniciarTemporizador(e) {
-  minutos = 1;
-  segundos = 5;
+  minutos = 24;
+  segundos = 60;
 
   
   const temporizador = setInterval(() => {
     segundos--;
 
     mostrarTiempo();
-    minutos = parseInt(minutos);
-    segundos = parseInt(segundos);
-    // console.log(minutos,segundos);
+    
     
     if (segundos === 0 && minutos === 0) {
       tareaModoTerminada(e);
@@ -127,6 +144,21 @@ function iniciarTemporizador(e) {
     
       
   }, 1000);
+}
+
+function iniciarTarea() {
+  limpiarInput();
+
+  const $botonesIniciar = document.querySelectorAll('.btn-iniciar');
+
+  $botonesIniciar.forEach($btnIniciar => {
+    $btnIniciar.addEventListener('click', e => {
+      añadirNombreTarea(e);
+      tareaModoProgreso(e);
+      iniciarTemporizador(e);
+    });
+  });
+
 }
 
 function añadirNombreTarea(e) {
@@ -148,20 +180,7 @@ function tareaModoProgreso(e){
   e.target.classList.add('btn-progreso');
 }
 
-function iniciarTarea() {
-  limpiarInput();
 
-  const $botonesIniciar = document.querySelectorAll('.btn-iniciar');
-
-  $botonesIniciar.forEach($btnIniciar => {
-    $btnIniciar.addEventListener('click', e => {
-      añadirNombreTarea(e);
-      tareaModoProgreso(e);
-      iniciarTemporizador(e);
-    });
-  });
-  
-}
 
 function limpiarInput(){
   $entradaTarea.value = '';
