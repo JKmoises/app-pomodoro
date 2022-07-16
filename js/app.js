@@ -81,7 +81,7 @@ function iniciarDescanso() {
   const $tituloTarea = document.querySelector('#titulo-tarea > p');
   $tituloTarea.textContent = 'Descanso';
 
-  minDescanso = 5;
+  minDescanso = 4;
   segDescanso = 60;
   
   const temporizadorDescanso = setInterval(() => {
@@ -96,7 +96,7 @@ function iniciarDescanso() {
     }
 
     if (segDescanso === 0) {
-      segDescanso = 5;
+      segDescanso = 60;
       minDescanso--;
     }
   },1000);
@@ -115,7 +115,7 @@ function mostrarTiempo() {
 
   minutos = parseInt(minutos);
   segundos = parseInt(segundos);
-  console.log(minutos,segundos);
+  // console.log(minutos,segundos);
 }
 
 function iniciarTemporizador(e) {
@@ -133,11 +133,10 @@ function iniciarTemporizador(e) {
       tareaModoTerminada(e);
       clearInterval(temporizador);
       iniciarDescanso();
-
     }
 
     if (segundos === 0) {
-      segundos = 5;
+      segundos = 60;
       minutos--;
     }
 
